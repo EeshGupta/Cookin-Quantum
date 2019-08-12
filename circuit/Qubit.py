@@ -15,18 +15,7 @@ class Qubit(object):
         self._a = a
         self._b = b
         self._id=i
-        
-    
-    def _normalize(self, a, b): 
-        """
-        Input: int a and b 
-        Output: Checks if amplitudes are normalized.
-        """
-        a=int(a)
-        b=int(b)
-        if (a**2 +b**2) !=1: 
-            raise ValueError("Amplitude values must be normalized!")
-        
+
     @property
     def a(self): 
         return self._a
