@@ -4,6 +4,8 @@ Created on Sun Aug 11 09:58:27 2019
 
 @author: Eesh Gupta
 """
+import math
+
 class Qubit(object):
    
     def __init__(self, i =None, a=1, b=0):
@@ -37,7 +39,7 @@ class Qubit(object):
     def b(self, value): 
         if abs(value)<=1: 
             self._b=value
-            self._a=sqrt(1-((abs(value))**2))
+            self._a=math.sqrt(1-((abs(value))**2))
         else: 
             raise ValueError("Since Amplitude values must be normalized," + 
                              " norm of b must be less than or equal to 1")
