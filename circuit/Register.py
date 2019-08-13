@@ -6,6 +6,7 @@ Created on Sun Aug 11 10:53:07 2019
 """
 import numpy as np
 from circuit.Qubit import Qubit
+from circuit.GateBuilder import gates
 
 class register: 
     def __init__(self, n): 
@@ -97,6 +98,19 @@ class register:
             result.append(keys[draw[i]])
         return result
     
+    def applyGate(self, gate, target_qubit_index): 
+        """
+        Input: A gate object to be applied on an int qubit index from qubit 
+        list
+        Output: Transformed stateVector
+        """
+        newGate = gates()
+        self.stateVector = newGate.buildApplyGate( gate = gate, 
+                                                  target_qubit_index = target_qubit_index, 
+                                                  qubits = self.n, 
+                                                  state_vector = self.stateVector )
+
+    
 #getter for self.state_vector
     @property    
     def stateVector(self): 
@@ -111,6 +125,35 @@ class register:
         for i in range(2**self.n):
             state_vector_arr[i,0]=values[i]
         return state_vector_arr
+    
+    @stateVector.setter
+    def stateVector(self, state_vector): 
+        """
+        Input: An array of values for different basis states
+        Function: Assigns those values to respective dict keys in internal
+        repr of state vector
+        """
+        #check for normalization condition
+        value = 0 
+        for val in state_vector: 
+            value += val**2
+        if val ==1: 
+            #initializing keys list
+            keys=[]
+            for key in self.state_vector.keys(): 
+                keys.append(key)
+            #checking length constraint
+            if len(keys) == len(values):
+                for i in range(len(keys)): 
+                    self.state_vector[keys[i]] = state_vector[i]
+            else: 
+                raise ValueError("Length od stateVector must be equal to " + 
+                                 str(2**self.n) + ".")
+        else: 
+            raise ValueError("stateVector must be normalized!")
+        
+            
+        
 
             
             
