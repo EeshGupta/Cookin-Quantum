@@ -5,7 +5,7 @@ Created on Sun Aug 11 10:53:07 2019
 @author: Eesh Gupta
 """
 import numpy as np
-from Qubit import Qubit
+from circuit.Qubit import Qubit
 
 class register: 
     def __init__(self, n): 
@@ -96,6 +96,21 @@ class register:
         for i in range(len(draw)): 
             result.append(keys[draw[i]])
         return result
+    
+#getter for self.state_vector
+    @property    
+    def stateVector(self): 
+        """
+        Output: Proper array repr of state vector array
+        """
+        state_vector_arr= np.zeros((2**self.n,1))
+        values=[]
+        
+        for val in self.state_vector.values():
+            values.append(val)
+        for i in range(2**self.n):
+            state_vector_arr[i,0]=values[i]
+        return state_vector_arr
 
             
             
