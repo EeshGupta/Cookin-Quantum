@@ -7,6 +7,8 @@ Created on Sun Aug 11 10:53:07 2019
 import numpy as np
 from Qubit import Qubit
 from GateBuilder import gates
+import cmath
+import math
 
 class register(object): 
     def __init__(self, n): 
@@ -87,12 +89,17 @@ class register(object):
         keys=[]
         result=[]
         
-        #List Of Probabilities and List of Keys
+        #List Of Probabilities
+        state_vector= self.stateVector
+        state_vector=state_vector.reshape((2**self.n))
+        for val in state_vector:
+            prob.append(abs(val)**2)
+        #List of states
         for key in self.state_vector.keys(): 
-            prob.append((self.state_vector[key])**2)
             keys.append(key)
-        
+        #List of indixes of states
         indices = list(range(0, len(self.state_vector.keys())))
+        #Measurement
         draw = np.random.choice(a=indices, size = hits, p=prob)
         for i in range(len(draw)): 
             result.append(keys[draw[i]])
@@ -118,9 +125,15 @@ class register(object):
         """
         Output: Proper array repr of state vector array
         """
-        state_vector_arr= np.zeros((2**self.n,1))
+        state_vector_arr= np.array([])
         values=[]
         
+        #complexify the state_vector_arr
+        for i in range(2**self.n): 
+            state_vector_arr = np.append(state_vector_arr, [complex(0,0)])
+        state_vector_arr = state_vector_arr.reshape((2**self.n, 1))
+        
+        #Creating repr
         for val in self.state_vector.values():
             values.append(val)
         for i in range(2**self.n):
@@ -153,8 +166,6 @@ class register(object):
         else: 
             raise ValueError("stateVector must be normalized!")
 
-        
-            
         
 
             

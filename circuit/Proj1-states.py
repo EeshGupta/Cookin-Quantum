@@ -5,8 +5,8 @@ Created on Tue Aug 13 08:59:37 2019
 @author: Eesh Gupta
 """
 
-from circuit.Qubit import Qubit
-from circuit.Register import register
+from Qubit import Qubit
+from Register import register
 import math
 
 def measCatState(n, hits): 

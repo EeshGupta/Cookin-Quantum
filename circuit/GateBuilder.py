@@ -7,6 +7,7 @@ Created on Tue Aug 13 11:50:43 2019
 
 import numpy as np
 import math
+import cmath
 
 class gates(object): 
     def __init__(self): 
@@ -33,7 +34,7 @@ class gates(object):
         """
         Output: Array repr of phase shift operator.
         """
-        return np.array([[1, 0], [0, math.e**((0+j)*phase)]])
+        return np.array([[1, 0], [0, math.e**(complex(0,1)*phase)]])
     
     def gateConverter(self, gate, phase): 
         """
