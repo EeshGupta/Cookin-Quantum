@@ -82,4 +82,50 @@ class gates(object):
         
         #applying the gate on register
         return gate_opr.dot(state_vector)
+    
+    def CNOT(self, control_ind, target_ind, qubit_size, basis_labels): 
+        """
+        Input: a list of indices of control qubits, a list of indices of target
+        qubits, number of qubits, a list of labels of basis states of 
+        system(register), 
+        Output: Array CNOT gate of size 2**n, 2**n
+        """
+        gate = np.zeros((2**qubit_size, 2**qubit_size))
+        imp_states = []
+        
+        #create Identity matrix
+        for i in range(2**qubit_size): 
+            gate[i, i] = 1.0
+        #identify key state labels
+        for state in basis_labels: 
+            check_state = False
+            #check if all controls are set to 1
+            for ind in control_ind: 
+                if state[ind] == 0: 
+                    check_state = False    #Once false, how to exit loop?!?!?
+            if check_state: 
+                imp_states.append(state)
+        #pair assignment
+        for control in imp_states: 
+            for ind in target_ind:
+                gate[control, control] = 0.0  #doesn;t seem right....why am i doing this for each index
+                if control[ind] == '1':
+                    gate[invBinDec(control), invBinDec(control[:ind] + '0' + control[ind + 1:])]
+                elif control[ind] == '0':
+                    gate[invBinDec(control), invBinDec(control[:ind] + '0' + control[ind + 1:])]
+                    
+        
+    def invBinDec(invBinary):
+    """
+    Input: Inverted Binary (a string)
+    Output: Decimal repr (an int)
+    """
+    dec=0
+    
+    for i in range(len(invBinary)):
+        if invBinary[i] == '1':
+            dec += 2**(i)
+    return dec
+            
+        
             
