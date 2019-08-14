@@ -5,10 +5,10 @@ Created on Sun Aug 11 10:53:07 2019
 @author: Eesh Gupta
 """
 import numpy as np
-from circuit.Qubit import Qubit
-from circuit.GateBuilder import gates
+from Qubit import Qubit
+from GateBuilder import gates
 
-class register: 
+class register(object): 
     def __init__(self, n): 
         """
         Input: Positive integer n to denote number of qubits
@@ -98,17 +98,18 @@ class register:
             result.append(keys[draw[i]])
         return result
     
-    def applyGate(self, gate, target_qubit_index): 
+    def applyGate(self, gate, target_qubit_index, phase = None): 
         """
         Input: A gate object to be applied on an int qubit index from qubit 
-        list
+        list. Input phase if gate is phase shift gate.
         Output: Transformed stateVector
         """
         newGate = gates()
         self.stateVector = newGate.buildApplyGate( gate = gate, 
                                                   target_qubit_index = target_qubit_index, 
                                                   qubits = self.n, 
-                                                  state_vector = self.stateVector )
+                                                  state_vector = self.stateVector, 
+                                                  phase = phase)
 
     
 #getter for self.state_vector
@@ -137,20 +138,21 @@ class register:
         value = 0 
         for val in state_vector: 
             value += val**2
-        if val ==1: 
+        if value >=0.999 and value <=1.001: 
             #initializing keys list
             keys=[]
             for key in self.state_vector.keys(): 
                 keys.append(key)
             #checking length constraint
-            if len(keys) == len(values):
+            if len(keys) == len(state_vector):
                 for i in range(len(keys)): 
                     self.state_vector[keys[i]] = state_vector[i]
             else: 
-                raise ValueError("Length od stateVector must be equal to " + 
+                raise ValueError("Length of stateVector must be equal to " + 
                                  str(2**self.n) + ".")
         else: 
             raise ValueError("stateVector must be normalized!")
+
         
             
         
