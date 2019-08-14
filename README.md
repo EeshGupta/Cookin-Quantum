@@ -1,2 +1,3 @@
 # Cookin-Quantum
-Simulation of Quantum Algorithms
+
+Goal: To optimize the quantum circuit for implementation of Shor's Algorithm.
