@@ -14,7 +14,7 @@ def circuit1():
     Output: measurement result
     """
     reg =register(3)
-    reg.applyGate('hadamard', 1)
+    reg.applySingleQubitGate('hadamard', 1)
     print(reg.stateVector)
     return reg.measure(1)
 
@@ -24,9 +24,9 @@ def circuit2():
     Output: measurement result
     """
     reg =register(3)
-    reg.applyGate('hadamard', 0)
-    reg.applyGate('hadamard', 1)
-    reg.applyGate('hadamard', 2)
+    reg.applySingleQubitGate('hadamard', 0)
+    reg.applySingleQubitGate('hadamard', 1)
+    reg.applySingleQubitGate('hadamard', 2)
     return reg.measure(1)
 
 def circuit3(): 
@@ -35,8 +35,8 @@ def circuit3():
     Output: measurement result
     """
     reg =register(3)
-    reg.applyGate('hadamard', 2)
-    reg.applyGate('hadamard', 2)
+    reg.applySingleQubitGate('hadamard', 2)
+    reg.applySingleQubitGate('hadamard', 2)
     return reg.measure(1)
 
 def circuit4(): 
@@ -46,7 +46,7 @@ def circuit4():
     Output: measurement result
     """
     reg =register(3)
-    reg.applyGate('hadamard', 2)
-    reg.applyGate('phase shift', 2, math.pi)
-    reg.applyGate('hadamard', 2)
+    reg.applySingleQubitGate('hadamard', 2)
+    reg.applySingleQubitGate('phase shift', 2, math.pi)
+    reg.applySingleQubitGate('hadamard', 2)
     return reg.measure(1)

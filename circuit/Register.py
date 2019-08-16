@@ -132,11 +132,11 @@ class register(object):
         for key in self.state_vector.keys(): 
             basis_labels.append(key)
         #calling gate function
-        self.stateVector = newGate.CNOT(self, control_ind = control_ind, 
+        self.stateVector = newGate.CNOT(control_ind = control_ind, 
                                         target_ind = target_ind, 
                                         qubit_size = self.n, 
-                                        basis_labels = basis_labels,
-                                        stateVector = self.stateVector)
+                                        basis_labels = basis_labels, 
+                                        stateVector= self.stateVector)
     
 #getter for self.state_vector
     @property    
