@@ -78,7 +78,7 @@ class register(object):
         elif n==1: 
             return '1'
         else: 
-            return str(n%2) + self.dec_to_bin(n//2)
+            return  str(n%2) + self.dec_to_bin(n//2) 
     
     def measure(self, hits): 
         """
@@ -105,9 +105,9 @@ class register(object):
             result.append(keys[draw[i]])
         return result
     
-    def applyGate(self, gate, target_qubit_index, phase = None): 
+    def applySingleQubitGate(self, gate, target_qubit_index, phase = None): 
         """
-        Input: A gate object to be applied on an int qubit index from qubit 
+        Input: A single qubit gate object to be applied on an int qubit index from qubit 
         list. Input phase if gate is phase shift gate.
         Output: Transformed stateVector
         """
@@ -115,9 +115,28 @@ class register(object):
         self.stateVector = newGate.buildApplyGate( gate = gate, 
                                                   target_qubit_index = target_qubit_index, 
                                                   qubits = self.n, 
-                                                  state_vector = self.stateVector, 
+                                                  stateVector = self.stateVector, 
                                                   phase = phase)
-
+        
+    def applyMultiQubitGate(self, gate, control_ind, target_ind): 
+        """
+        Assumes CNOT Gate
+        Input: A multi qubit gate with control qubits specified by int in list 
+        of control ind and target qubits specified by int in list target qubit. 
+        Output: Transformed stateVector
+        """
+        basis_labels = []
+        newGate = gates()
+        
+        #getting basis state labels
+        for key in self.state_vector.keys(): 
+            basis_labels.append(key)
+        #calling gate function
+        self.stateVector = newGate.CNOT(self, control_ind = control_ind, 
+                                        target_ind = target_ind, 
+                                        qubit_size = self.n, 
+                                        basis_labels = basis_labels,
+                                        stateVector = self.stateVector)
     
 #getter for self.state_vector
     @property    

@@ -52,7 +52,7 @@ class gates(object):
         else: 
             raise ValueError("input arg gate should be a string")
     
-    def buildApplyGate(self, gate, target_qubit_index, qubits, state_vector, 
+    def buildApplyGate(self, gate, target_qubit_index, qubits, stateVector, 
                        phase):
         """
         Input: A gate attribute, int qubit index the gate will be applied to, 
@@ -81,14 +81,15 @@ class gates(object):
             gate_opr = np.kron(gate_opr, self.I)
         
         #applying the gate on register
-        return gate_opr.dot(state_vector)
+        return gate_opr.dot(stateVector)
     
-    def CNOT(self, control_ind, target_ind, qubit_size, basis_labels): 
+    def CNOT(self, control_ind, target_ind, qubit_size, basis_labels, 
+             stateVector): 
         """
         Input: a list of indices of control qubits, a list of indices of target
         qubits, number of qubits, a list of labels of basis states of 
-        system(register), 
-        Output: Array CNOT gate of size 2**n, 2**n
+        system(register), array stateVector
+        Output: Statevector transformed by CNOT gate
         """
         gate = np.zeros((2**qubit_size, 2**qubit_size))
         imp_states = []
@@ -98,34 +99,42 @@ class gates(object):
             gate[i, i] = 1.0
         #identify key state labels
         for state in basis_labels: 
-            check_state = False
+            check_state = True
             #check if all controls are set to 1
             for ind in control_ind: 
-                if state[ind] == 0: 
-                    check_state = False    #Once false, how to exit loop?!?!?
+                if state[ind] == '0': 
+                    check_state = False    #redundancy issues here
             if check_state: 
                 imp_states.append(state)
         #pair assignment
         for control in imp_states: 
+            target = control
             for ind in target_ind:
-                gate[control, control] = 0.0  #doesn;t seem right....why am i doing this for each index
-                if control[ind] == '1':
-                    gate[invBinDec(control), invBinDec(control[:ind] + '0' + control[ind + 1:])]
-                elif control[ind] == '0':
-                    gate[invBinDec(control), invBinDec(control[:ind] + '0' + control[ind + 1:])]
+                if target[ind] == '1':
+                    target = target[:ind] + '0' + target[ind + 1:]
+                elif target[ind] == '0':
+                    target = target[:ind] + '1' + target[ind + 1:]
+
+            #erasing the prev value in gate
+            gate[self.invBinDec(control), self.invBinDec(control)] = 0.0
+            #inserting the unit at a different spot
+            gate[self.invBinDec(control), self.invBinDec(target)] = 1.0
+        
+        #applying the gate on register
+        return gate.dot(stateVector)
                     
         
-    def invBinDec(invBinary):
-    """
-    Input: Inverted Binary (a string)
-    Output: Decimal repr (an int)
-    """
-    dec=0
-    
-    for i in range(len(invBinary)):
-        if invBinary[i] == '1':
-            dec += 2**(i)
-    return dec
-            
+    def invBinDec(self, invBinary):
+        """
+        Input: Inverted Binary (a string)
+        Output: Decimal repr (an int)
+        """
+        dec=0
+        
+        for i in range(len(invBinary)):
+            if invBinary[i] == '1':
+                dec += 2**(i)
+        return dec
+
         
             
