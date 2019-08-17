@@ -64,7 +64,7 @@ class gates(object):
         Output: Transformed state Vector
         """
         gate_opr = np.array([])
-        target_qubit_index = qubits - target_qubit_index - 1
+        #target_qubit_index = qubits - target_qubit_index - 1
         
         #Gate Conversion
         gate= self.gateConverter(gate, phase)
@@ -83,6 +83,7 @@ class gates(object):
         for i in range(target_qubit_index + 1, qubits): 
             gate_opr = np.kron(gate_opr, self.I)
         
+        #return gate_opr
         #applying the gate on register
         return self.applyGate(gate_opr, stateVector)
     
@@ -152,6 +153,6 @@ class gates(object):
         return gate.dot(stateVector)
 #sSOme Tests
 #c= gates()
-#a=c.CNOT([1], [0], 2, ['00','01','10','11'], [1,0,0,0])
+#a=c.SingleQubitGate('hadamard', 1, 2, [1,0,0,0], phase = None)
         
             
