@@ -10,11 +10,13 @@ import math
 import cmath
 
 class gates(object): 
+    
     def __init__(self): 
         """
-        nothing
+        controls all operations of operators
         """
    
+   #Single Qubit Gates 
     @property
     def I(self):
         """
@@ -30,6 +32,7 @@ class gates(object):
         return np.array([[1/math.sqrt(2), 1/math.sqrt(2)], [1/math.sqrt(2), 
                           -1/math.sqrt(2)]])
     
+    @property
     def PS(self, phase): 
         """
         Output: Array repr of phase shift operator.
@@ -52,7 +55,7 @@ class gates(object):
         else: 
             raise ValueError("input arg gate should be a string")
     
-    def buildApplyGate(self, gate, target_qubit_index, qubits, stateVector, 
+    def SingleQubitGate(self, gate, target_qubit_index, qubits, stateVector, 
                        phase):
         """
         Input: A gate attribute, int qubit index the gate will be applied to, 
@@ -81,8 +84,9 @@ class gates(object):
             gate_opr = np.kron(gate_opr, self.I)
         
         #applying the gate on register
-        return gate_opr.dot(stateVector)
+        return self.applyGate(gate_opr, stateVector)
     
+    #Multiple Qubit Gates
     def CNOT(self, control_ind, target_ind, qubit_size, basis_labels, 
              stateVector): 
         """
@@ -106,35 +110,48 @@ class gates(object):
                     check_state = False    #redundancy issues here
             if check_state: 
                 imp_states.append(state)
+        #print(imp_states)
         #pair assignment
         for control in imp_states: 
             target = control
+            #print(control)
             for ind in target_ind:
                 if target[ind] == '1':
                     target = target[:ind] + '0' + target[ind + 1:]
                 elif target[ind] == '0':
                     target = target[:ind] + '1' + target[ind + 1:]
-
+            #print(target)
+                    
             #erasing the prev value in gate
             gate[self.invBinDec(control), self.invBinDec(control)] = 0.0
             #inserting the unit at a different spot
             gate[self.invBinDec(control), self.invBinDec(target)] = 1.0
         
         #applying the gate on register
-        return gate.dot(stateVector)
+        #return gate debug
+        return self.applyGate(gate, stateVector)
                     
-        
-    def invBinDec(self, invBinary):
+    #helper method for CNOT
+    def invBinDec(self, Binary):
         """
-        Input: Inverted Binary (a string)
+        Input: Binary (a string)
         Output: Decimal repr (an int)
         """
         dec=0
-        
-        for i in range(len(invBinary)):
-            if invBinary[i] == '1':
+        length= len(Binary)
+        for i in range(length):
+            if Binary[length-i-1] == '1':
                 dec += 2**(i)
         return dec
-
+    
+    def applyGate(self, gate, stateVector): 
+        """
+        Input: A single of multiple qubit gate
+        Ouput: Transformed State Vector
+        """
+        return gate.dot(stateVector)
+#sSOme Tests
+#c= gates()
+#a=c.CNOT([1], [0], 2, ['00','01','10','11'], [1,0,0,0])
         
             

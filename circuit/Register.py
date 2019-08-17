@@ -11,11 +11,12 @@ import cmath
 import math
 
 class register(object): 
+    """Register Class controls qubits and statevector methods"""
     def __init__(self, n): 
         """
         Input: Positive integer n to denote number of qubits
         """
-        self.n=n
+        self.n = n
         self.qubits= self.createQubits()
         self.state_vector=self.createStateVector()
         self.updateStateVector()
@@ -29,23 +30,26 @@ class register(object):
         for i in range(self.n): 
             qubit_list.append(Qubit(i))
         return qubit_list
-    
+
+    #StateVector Methods
     def createStateVector(self):
         """
         Output: Create a column vector representation of the tensor product of 
         n qubits
         """
-#        state_vector=np.zeros((2**self.n,1))
-#        updatestatevector(state_vector)
-#        return state_vector
         state_vector={}
         for i in range(2**(self.n)):
+            #print(i)
             c=self.bin_spec(i)
+            #print(c)
             state_vector[c]=0.0
         return state_vector
     
     def updateStateVector(self):
         """
+        ***To be used only when changing amplitudes of 
+        individual qubits directly***
+        
         Output: Updates the amplitudes of basis states of combined system
         """
         for key in self.state_vector.keys(): 
@@ -64,11 +68,12 @@ class register(object):
         Output: A self.n digit inverted binary representation of n.
         """
         a=self.dec_to_bin(n)
+        #print(a)
         while len(a) != self.n:
-            a = a + '0'
+            a =  '0' + a 
         return a
     
-    def dec_to_bin(self,n):
+    def dec_to_bin(self, n):
         """
         Input: int n in assumed decimal representation
         Output: Inverted Binary representation of input n
@@ -78,65 +83,21 @@ class register(object):
         elif n==1: 
             return '1'
         else: 
-            return  str(n%2) + self.dec_to_bin(n//2) 
+            return   self.dec_to_bin(n//2) + str(n%2)
+            
+    def invBinDec(self, Binary):
+        """
+        Input: Binary (a string)
+        Output: Decimal repr (an int)
+        """
+        dec=0
+        length= len(Binary)
+        for i in range(length):
+            if Binary[length-i-1] == '1':
+                dec += 2**(i)
+        return dec
     
-    def measure(self, hits): 
-        """
-        Input: int hits= Number of times the measurements must be performed
-        Output: A list of resultant qubits with a length of # of hits
-        """
-        prob=[]
-        keys=[]
-        result=[]
-        
-        #List Of Probabilities
-        state_vector= self.stateVector
-        state_vector=state_vector.reshape((2**self.n))
-        for val in state_vector:
-            prob.append(abs(val)**2)
-        #List of states
-        for key in self.state_vector.keys(): 
-            keys.append(key)
-        #List of indixes of states
-        indices = list(range(0, len(self.state_vector.keys())))
-        #Measurement
-        draw = np.random.choice(a=indices, size = hits, p=prob)
-        for i in range(len(draw)): 
-            result.append(keys[draw[i]])
-        return result
     
-    def applySingleQubitGate(self, gate, target_qubit_index, phase = None): 
-        """
-        Input: A single qubit gate object to be applied on an int qubit index from qubit 
-        list. Input phase if gate is phase shift gate.
-        Output: Transformed stateVector
-        """
-        newGate = gates()
-        self.stateVector = newGate.buildApplyGate( gate = gate, 
-                                                  target_qubit_index = target_qubit_index, 
-                                                  qubits = self.n, 
-                                                  stateVector = self.stateVector, 
-                                                  phase = phase)
-        
-    def applyMultiQubitGate(self, gate, control_ind, target_ind): 
-        """
-        Assumes CNOT Gate
-        Input: A multi qubit gate with control qubits specified by int in list 
-        of control ind and target qubits specified by int in list target qubit. 
-        Output: Transformed stateVector
-        """
-        basis_labels = []
-        newGate = gates()
-        
-        #getting basis state labels
-        for key in self.state_vector.keys(): 
-            basis_labels.append(key)
-        #calling gate function
-        self.stateVector = newGate.CNOT(control_ind = control_ind, 
-                                        target_ind = target_ind, 
-                                        qubit_size = self.n, 
-                                        basis_labels = basis_labels, 
-                                        stateVector= self.stateVector)
     
 #getter for self.state_vector
     @property    
@@ -170,6 +131,7 @@ class register(object):
         value = 0 
         for val in state_vector: 
             value += val**2
+            #print(value)
         if value >=0.999 and value <=1.001: 
             #initializing keys list
             keys=[]
@@ -184,6 +146,7 @@ class register(object):
                                  str(2**self.n) + ".")
         else: 
             raise ValueError("stateVector must be normalized!")
+
 
         
 
