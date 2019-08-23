@@ -152,7 +152,7 @@ class gates(object):
         """
         return gate.dot(stateVector)
 #sSOme Tests
-#c= gates()
-#a=c.SingleQubitGate('hadamard', 1, 2, [1,0,0,0], phase = None)
+c= gates()
+a=c.SingleQubitGate('hadamard', 1, 2, [1,0,0,0], phase = None)
         
             
