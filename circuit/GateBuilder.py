@@ -8,151 +8,179 @@ Created on Tue Aug 13 11:50:43 2019
 import numpy as np
 import math
 import cmath
+from GateMaker import gateMaker
+from ControlGates import control
+from QuantumCircuit import QuantumCircuit
 
-class gates(object): 
+class gates(gateMaker): 
     
-    def __init__(self): 
+    def __init__(self, qubits, state_vector): 
         """
         controls all operations of operators
-        """
-   
-   #Single Qubit Gates 
-    @property
-    def I(self):
-        """
-        Output: Array repr of Identity operator.
-        """
-        return np.array([[1, 0], [0, 1]])
-      
-    @property    
-    def H(self): 
-        """
-        Output: Array repr of Hadamard operator.
-        """
-        return np.array([[1/math.sqrt(2), 1/math.sqrt(2)], [1/math.sqrt(2), 
-                          -1/math.sqrt(2)]])
-    
-    @property
-    def PS(self, phase): 
-        """
-        Output: Array repr of phase shift operator.
-        """
-        return np.array([[1, 0], [0, math.e**(complex(0,1)*phase)]])
-    
-    def gateConverter(self, gate, phase): 
-        """
-        Input: some string
-        Output: corresponding operator/gate
-        """
-        if type(gate)==str:
+        Input: int number of qubits, state_vector dict
+        """ 
+        self.qubits = qubits
+        self.basis_states = []
+        self.stateVector = []
+        
+        for key in state_vector.keys(): 
+            self.basis_states.append(key)
+        for amp in state_vector.values(): 
+            self.stateVector.append(amp)
             
-            if gate == 'identity':
-                return self.I
-            elif gate == 'hadamard': 
-                return self.H
-            elif gate == 'phase shift':
-                return self.PS(phase)
-        else: 
-            raise ValueError("input arg gate should be a string")
-    
-    def SingleQubitGate(self, gate, target_qubit_index, qubits, stateVector, 
-                       phase):
+        self.control = control(self.qubits, self.basis_states, self.stateVector)
+        
+#####################        Single Qubit Gates          ######################
+    def Hadamard(self, target_qubit_index):
         """
-        Input: A gate attribute, int qubit index the gate will be applied to, 
-        int number of qubits, an array to be transformed. A phase arg for 
-        phase shift gate only.
-        Output: Transformed state Vector
+        Input:  int target_qubit_index
+        Output: Applied Hadamard on target Qubit and transformed Statevector
         """
-        gate_opr = np.array([])
-        #target_qubit_index = qubits - target_qubit_index - 1
-        
-        #Gate Conversion
-        gate= self.gateConverter(gate, phase)
-            
-        
-        #repeated tensor products to build the gate matrix
-        for i in range(0, target_qubit_index):
-            if i == 0: 
-                gate_opr = self.I
-            else: 
-                gate_opr = np.kron(gate_opr, self.I)
-        if target_qubit_index == 0: 
-            gate_opr = gate
-        else:
-            gate_opr = np.kron(gate_opr, gate)
-        for i in range(target_qubit_index + 1, qubits): 
-            gate_opr = np.kron(gate_opr, self.I)
-        
-        #return gate_opr
-        #applying the gate on register
-        return self.applyGate(gate_opr, stateVector)
+        gate = self.SingletoMultiQubitGateConverter(self.H, target_qubit_index = target_qubit_index,
+                                                    qubits = self.qubits)
+        return self.applyGate(gate)
+
+    def PhaseShift(self, target_qubit_index, phase):
+        """
+        Input:  int target_qubit_index
+        Output: Applied Hadamard on target Qubit and transformed Statevector
+        """
+        gate = self.SingletoMultiQubitGateConverter(gate = self.PS(phase = phase),
+                                                     target_qubit_index = target_qubit_index,
+                                                    qubits = self.qubits)
+        return self.applyGate(gate)
     
-    #Multiple Qubit Gates
-    def CNOT(self, control_ind, target_ind, qubit_size, basis_labels, 
-             stateVector): 
+    
+    def singleQubitGateMaker1Axis(self, alpha, theta, axis1): 
+        """
+        Input: Angle alpha for phase, angle theta for construction of rotation
+        operator around axis1 (list of vector components).
+
+        Output: A single qubit gate as a composition of the pauli rotation
+        operators
+        
+        *Decomposition of unitary gate into 1 rotation operator 
+        """
+        gate = (math.e**(complex(0,1)*self.alpha))*self.R(self.axis1, 
+               self.theta)
+        return self.applyGate(gate)
+    
+    def singleQubitGateMaker2Axes(self, alpha, beta, gamma, delta, axis1, axis2):
+        """ 
+        *Decomposition of unitary gate into 2 rotaion operators
+        (eg. XY and ZY)
+    
+        Input: Angle alpha for phase, angles beta and delta for contruction of 
+        respective rotation operators around axis1 (list of vector components), 
+        angle gamma for construction of rotation operator around axis2 
+        (list of vector components).
+    
+        Output: A single qubit gate as a composition of the pauli gates
+        """
+        gate = (math.e**(complex(0,1)*self.alpha))*self.R(self.axis1, 
+               self.beta)*self.R(self.axis2, self.gamma)*self.R(self.axis1, 
+                                self.delta)
+        return self.applyGate(gate)
+    
+###############################################################################
+    def CNOT(self, control_indices, target_ind): 
         """
         Input: a list of indices of control qubits, a list of indices of target
-        qubits, number of qubits, a list of labels of basis states of 
-        system(register), array stateVector
+        qubits
         Output: Statevector transformed by CNOT gate
         """
-        gate = np.zeros((2**qubit_size, 2**qubit_size))
-        imp_states = []
-        
-        #create Identity matrix
-        for i in range(2**qubit_size): 
-            gate[i, i] = 1.0
-        #identify key state labels
-        for state in basis_labels: 
-            check_state = True
-            #check if all controls are set to 1
-            for ind in control_ind: 
-                if state[ind] == '0': 
-                    check_state = False    #redundancy issues here
-            if check_state: 
-                imp_states.append(state)
-        #print(imp_states)
-        #pair assignment
-        for control in imp_states: 
-            target = control
-            #print(control)
-            for ind in target_ind:
-                if target[ind] == '1':
-                    target = target[:ind] + '0' + target[ind + 1:]
-                elif target[ind] == '0':
-                    target = target[:ind] + '1' + target[ind + 1:]
-            #print(target)
-                    
-            #erasing the prev value in gate
-            gate[self.invBinDec(control), self.invBinDec(control)] = 0.0
-            #inserting the unit at a different spot
-            gate[self.invBinDec(control), self.invBinDec(target)] = 1.0
-        
-        #applying the gate on register
-        #return gate debug
-        return self.applyGate(gate, stateVector)
-                    
-    #helper method for CNOT
-    def invBinDec(self, Binary):
-        """
-        Input: Binary (a string)
-        Output: Decimal repr (an int)
-        """
-        dec=0
-        length= len(Binary)
-        for i in range(length):
-            if Binary[length-i-1] == '1':
-                dec += 2**(i)
-        return dec
+        return self.applyGate(self.control.CNOT(control_indices, target_ind))
     
-    def applyGate(self, gate, stateVector): 
+    def Toffoli(self, control1_index, control2_index, target_index): 
+        """
+        Input: int 2 control indices and 1 target indices
+        Output: Implements the toffoli gate on circuit
+        """
+        return self.CNOT(control_indices = [control1_index, control2_index], 
+                         target_ind = [target_index])
+    
+    def CU1(self, control_index, target_index, alpha, beta, gamma, delta): 
+        """
+        Input: int control index and int target index. angle values to construct
+        rotation opertors satisfying AXBXC decomposition of a unitary operator.
+        
+        Output: Applies Controlled U gate and transforms stateVector
+        """
+        Z_axis = [0, 0, 1]
+        Y_axis = [0, 1, 0]
+        
+        A= (math.e**(complex(0,1)*alpha))*self.R(Z_axis, beta)*self.R(Y_axis, gamma/2)
+        B= self.R(Y_axis, -gamma/2)*self.R(Z_axis, -(delta +beta)/2)
+        C= self.R(Z_axis, (delta - beta)/2)
+        
+        #Performing the operations AXBXC
+        #A
+        gateA = self.SingletoMultiQubitGateConverter(gate = A,
+                                                     target_qubit_index = target_index,
+                                                    qubits = self.qubits)
+        self.applyGate(gateA)
+        #X
+        self.CNOT(control_indices = [control_index], target_ind = [target_index])
+        #B
+        gateB = self.SingletoMultiQubitGateConverter(gate = B,
+                                                     target_qubit_index = target_index,
+                                                    qubits = self.qubits)
+        self.applyGate(gateB)
+        #X
+        self.CNOT([control_index], [target_index])
+        #C
+        gateC = self.SingletoMultiQubitGateConverter(gate = C,
+                                                     target_qubit_index = target_index,
+                                                    qubits = self.qubits)
+        self.applyGate(gateC)
+        
+    def CUN(self, n, alpha, beta, gamma, delta): 
+        """
+        Input: int n (first n qubits are control n+1 is target), angle values 
+        in radians for U gate
+        Output: Perform controlled U operation with n control qubits
+        """
+        
+        #creating a helper circuits
+        #current
+        circ1 = QuantumCircuit(self.qubits)
+        circ1.stateVector = self.stateVector
+        #WorkQubits
+        circ2 = QuantumCircuit(n - 1)
+        #Helper Circuit
+        circ3 = circ2 + circ1
+        
+        #Algorithm with toffoli gates and work qubits
+        c = n+1
+        w = 1
+        
+        circ3.gates.Toffoli(n-1, n, 0)
+        while c <= 2n-2 and w <= n-2: 
+            circ3.gates.Toffoli(c, w-1, w)
+            c+=1
+            w+=1
+            
+        circ3.gates.CU1(w, 2n - 1, alpha, beta, gamma, delta)
+        
+        while c >= n+1 and w >= 1: 
+            circ3.gates.Toffoli(c, w-1, w)
+            c-=1
+            w-=1
+        circ3.gates.Toffoli(n-1, n, 0)
+            
+        
+
+###############################################################################
+        
+    def applyGate(self, gate): 
         """
         Input: A single of multiple qubit gate
         Ouput: Transformed State Vector
         """
-        return gate.dot(stateVector)
+        self.stateVector = gate.dot(self.stateVector)
+        
 #sSOme Tests
-c= gates()
-a=c.SingleQubitGate('hadamard', 1, 2, [1,0,0,0], phase = None)
+#c= gates()
+#a=c.SingleQubitGate('hadamard', 1, 2, [1,0,0,0], phase = None)
         
             

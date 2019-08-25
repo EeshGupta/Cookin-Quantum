@@ -115,10 +115,10 @@ class GroverAlgo(QuantumCircuit):
             
             
             
+#c=GroverAlgo(10, , '0000000001')
+#b=c.calcNeedle()
+#a= c.visualization()
+#print(str((math.pi/4)*(math.sqrt(8))))
 
-c=GroverAlgo(10, , '0000000001')
-b=c.calcNeedle()
-a= c.visualization()
-print(str((math.pi/4)*(math.sqrt(8))))
         
         

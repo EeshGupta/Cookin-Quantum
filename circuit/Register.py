@@ -129,9 +129,11 @@ class register(object):
         """
         #check for normalization condition
         value = 0 
+        #print(state_vector)
         for val in state_vector: 
-            value += val**2
-            #print(value)
+            value += (abs(val))**2
+        
+        #print(value)
         if value >=0.999 and value <=1.001: 
             #initializing keys list
             keys=[]
