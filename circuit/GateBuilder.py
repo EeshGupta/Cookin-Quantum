@@ -9,8 +9,8 @@ import numpy as np
 import math
 import cmath
 from GateMaker import gateMaker
+from GroverGates import groverGates
 from ControlGates import control
-from QuantumCircuit import QuantumCircuit
 
 class gates(gateMaker): 
     
@@ -134,42 +134,59 @@ class gates(gateMaker):
                                                     qubits = self.qubits)
         self.applyGate(gateC)
         
-    def CUN(self, n, alpha, beta, gamma, delta): 
-        """
-        Input: int n (first n qubits are control n+1 is target), angle values 
-        in radians for U gate
-        Output: Perform controlled U operation with n control qubits
-        """
-        
-        #creating a helper circuits
-        #current
-        circ1 = QuantumCircuit(self.qubits)
-        circ1.stateVector = self.stateVector
-        #WorkQubits
-        circ2 = QuantumCircuit(n - 1)
-        #Helper Circuit
-        circ3 = circ2 + circ1
-        
-        #Algorithm with toffoli gates and work qubits
-        c = n+1
-        w = 1
-        
-        circ3.gates.Toffoli(n-1, n, 0)
-        while c <= 2n-2 and w <= n-2: 
-            circ3.gates.Toffoli(c, w-1, w)
-            c+=1
-            w+=1
-            
-        circ3.gates.CU1(w, 2n - 1, alpha, beta, gamma, delta)
-        
-        while c >= n+1 and w >= 1: 
-            circ3.gates.Toffoli(c, w-1, w)
-            c-=1
-            w-=1
-        circ3.gates.Toffoli(n-1, n, 0)
-            
+#    def CUN(self, n, alpha, beta, gamma, delta): 
+#        """
+#        Input: int n (first n qubits are control n+1 is target), angle values 
+#        in radians for U gate
+#        Output: Perform controlled U operation with n control qubits
+#        """
+#        
+#        #creating a helper circuits
+#        #current
+#        circ1 = QuantumCircuit(self.qubits)
+#        circ1.stateVector = self.stateVector
+#        #WorkQubits
+#        circ2 = QuantumCircuit(n - 1)
+#        #Helper Circuit
+#        circ3 = circ2 + circ1
+#        
+#        #Algorithm with toffoli gates and work qubits
+#        c = n+1
+#        w = 1
+#        
+#        circ3.gates.Toffoli(n-1, n, 0)
+#        while c <= 2n-2 and w <= n-2: 
+#            circ3.gates.Toffoli(c, w-1, w)
+#            c+=1
+#            w+=1
+#            
+#        circ3.gates.CU1(w, 2n - 1, alpha, beta, gamma, delta)
+#        
+#        while c >= n+1 and w >= 1: 
+#            circ3.gates.Toffoli(c, w-1, w)
+#            c-=1
+#            w-=1
+#        circ3.gates.Toffoli(n-1, n, 0)
+#            
         
 
+######################      Grover's Algo gate      ###########################
+
+    def Oracle(self, needle_state): 
+        """
+        Applies the oracle onto stateVector
+        """
+        g = groverGates()
+        return self.applyGate(g.oracle(n = self.qubits, needle_state = needle_state))
+    
+    def J(self): 
+        """
+        Applies the oracle onto stateVector
+        """
+        g = groverGates()
+        return self.applyGate(g.jOperator(n = self.qubits))
+    
+        
 ###############################################################################
         
     def applyGate(self, gate): 

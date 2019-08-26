@@ -83,15 +83,22 @@ class QuantumCircuit(object):
         """
         self.register.stateVector = stateVector
         #self.stateVector = self.register.stateVector
+
+    def updateStateVector(self):
+        """
+        Updates StateVector
+        """
+        #Updating stateVector in register from gates
+        self.stateVector = self.gates.stateVector
     
 ###Tests###
-circ =QuantumCircuit(2)
-circ.gates.Hadamard(1)
-g= circ.gates.stateVector
-r= circ.register.stateVector
-#circ.gates.CU1(0,1,math.pi, math.pi, math.pi/2, math.pi)
-g= circ.gates.stateVector
-
-circ1=QuantumCircuit(2)
-circ2 = circ1 + circ
+#circ =QuantumCircuit(2)
+#circ.gates.Hadamard(1)
+#g= circ.gates.stateVector
+#r= circ.register.stateVector
+##circ.gates.CU1(0,1,math.pi, math.pi, math.pi/2, math.pi)
+#g= circ.gates.stateVector
+#
+#circ1=QuantumCircuit(2)
+#circ2 = circ1 + circ
 

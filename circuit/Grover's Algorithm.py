@@ -4,9 +4,9 @@ Created on Fri Aug 16 13:01:31 2019
 
 @author: Eesh Gupta
 """
-from Register import register
+#from Register import register
 import numpy as np
-from QuantumCircuit import QuantumCircuit
+from QuantumCircuit import QuantumCircuit 
 from matplotlib import pyplot
 import math
 
@@ -21,36 +21,36 @@ class GroverAlgo(QuantumCircuit):
         self.needle_state = needle_state
         self.prob_amp = []                             #For visualization
     
-    @property
-    def oracle(self): 
-        """
-        Output: Oracle operator
-        """
-        oracle = np.zeros((2**self.n, 2**self.n))
-        
-        #create Identity matrix
-        for i in range(2**self.n): 
-            oracle[i, i] = 1.0
-        #flip needle state
-        oracle[self.register.invBinDec(self.needle_state), 
-               self.register.invBinDec(self.needle_state) ] = -1.0
-        #Give it out
-        return oracle
-    
-    @property
-    def jOperator(self): 
-        """
-        Output: J operator
-        """
-        #Building J
-        J_op = np.zeros((2**self.n, 2**self.n))
-        
-        #create Identity matrix
-        for i in range(2**self.n): 
-            J_op[i, i] = 1.0
-        #flip first state
-        J_op[0, 0] = -1.0
-        return J_op
+#    @property
+#    def oracle(self): 
+#        """
+#        Output: Oracle operator
+#        """
+#        oracle = np.zeros((2**self.n, 2**self.n))
+#        
+#        #create Identity matrix
+#        for i in range(2**self.n): 
+#            oracle[i, i] = 1.0
+#        #flip needle state
+#        oracle[self.register.invBinDec(self.needle_state), 
+#               self.register.invBinDec(self.needle_state) ] = -1.0
+#        #Give it out
+#        return oracle
+#    
+#    @property
+#    def jOperator(self): 
+#        """
+#        Output: J operator
+#        """
+#        #Building J
+#        J_op = np.zeros((2**self.n, 2**self.n))
+#        
+#        #create Identity matrix
+#        for i in range(2**self.n): 
+#            J_op[i, i] = 1.0
+#        #flip first state
+#        J_op[0, 0] = -1.0
+#        return J_op
     
     def diffusionOp(self): 
         """
@@ -58,12 +58,12 @@ class GroverAlgo(QuantumCircuit):
         """
         #Diffusion Subroutine
         for i in range(self.n): 
-            self.applySingleQubitGate('hadamard', i)
+            self.gates.Hadamard(i)
         #print(self.stateVector)
-        self.register.stateVector = self.jOperator.dot(self.register.stateVector)
+        self.gates.J()
         #print(self.stateVector)
         for i in range(self.n): 
-            self.applySingleQubitGate('hadamard', i)
+            self.gates.Hadamard(i)
             
     def groverSubroutine(self): 
         """
@@ -72,10 +72,12 @@ class GroverAlgo(QuantumCircuit):
         """
         for i in range(self.iter): 
             #oracle
-            self.register.stateVector = self.oracle.dot(self.register.stateVector)
+#            self.stateVector = self.oracle.dot(self.stateVector)
+            self.gates.Oracle(self.needle_state)
             #print(self.stateVector)
             #diffusion operator
             self.diffusionOp()
+            self.updateStateVector()
             self.prob_amp.append(self.register.state_vector[self.needle_state])
             
     
@@ -84,10 +86,10 @@ class GroverAlgo(QuantumCircuit):
         Output: Measurement result after implementation of Grover's algo
         """
         for i in range(self.n): 
-            self.applySingleQubitGate('hadamard', i)
+            self.gates.Hadamard(i)
         #print(self.stateVector)
         self.groverSubroutine()
-        print(self.register.stateVector)
+        #print(self.stateVector)
         return self.measure(5)
     
     def visualization(self): 
@@ -115,10 +117,10 @@ class GroverAlgo(QuantumCircuit):
             
             
             
-#c=GroverAlgo(10, , '0000000001')
-#b=c.calcNeedle()
-#a= c.visualization()
-#print(str((math.pi/4)*(math.sqrt(8))))
+c=GroverAlgo(3, 100 , '010')
+b=c.calcNeedle()
+a= c.visualization()
+print(str((math.pi/4)*(math.sqrt(8))))
 
         
         
