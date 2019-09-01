@@ -25,5 +25,9 @@ Output:
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 Please make sure to update tests as appropriate.
 
+## References
+The main architecture of the cookin-quantum framework was built with the help of Don Candela's research paper "Undergraduate computational physics projects on quantum computing" which can be found here: https://www.semanticscholar.org/paper/Undergraduate-computational-physics-projects-on-Candela/a1234106949ad338bf668853ee48199b08b2e4ce
+
+
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
