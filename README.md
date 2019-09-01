@@ -8,7 +8,7 @@ This project is to be run on an ipython IDE. I reccomend downloading anaconda fr
 
 ## Usage
 
-Here we apply the Hadamard Gate to the first qubit and see how such operation affects the probability amplitudes of basis states.
+Here we apply the Hadamard Gate to the first qubit in 2 qubit Quantum Circuit and see how such operation affects the probability amplitudes of basis states.
 
 Run the QuantumCircuit file from cookin-quantum/circuit
 ```python
@@ -35,7 +35,7 @@ Please make sure to update tests as appropriate.
 For more information/suggestions regarding this project and quantum computing in general, please contact me at my email: eesh.gupta@rutgers.edu
 
 ## References
-The main architecture of the cookin-quantum framework was built with the help of Don Candela's research paper "Undergraduate computational physics projects on quantum computing" which can be found here: https://www.semanticscholar.org/paper/Undergraduate-computational-physics-projects-on-Candela/a1234106949ad338bf668853ee48199b08b2e4ce
+The main architecture of the cookin-quantum framework was built with the help of Don Candela's research paper ["Undergraduate computational physics projects on quantum computing"](https://www.semanticscholar.org/paper/Undergraduate-computational-physics-projects-on-Candela/a1234106949ad338bf668853ee48199b08b2e4ce) .
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
