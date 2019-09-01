@@ -1,23 +1,29 @@
 # Cookin-Quantum
 
-Short-Term Goal: To simulate Shor's factoring algorithm and Grover's Search algorithm. 
+Cookin-Quantum is an open source framework for simulating quantum programs. The goal of this project is to simulate and optimize important Quantum algorithms in fields of encryption and machine learning.
 
-Project Deadline: August 31, 2019
+## Installation
 
-Resources: Candela, Don. “Undergraduate computational physics projects on quantum computing.” (2015).
+This project is to be run on an ipython IDE. I reccomend downloading anaconda from https://www.anaconda.com/distribution/, forking and downloading this repository, and running this project on Spyder.
 
+## Usage
 
+Here we apply the Hadamard Gate to the first qubit and see how such operation affects the probability amplitudes of basis states.
 
+Run the QuantumCircuit file from cookin-quantum/circuit
+```python
+qc = QuantumCircuit(2)
+qc.gates.Hadamard(0)
+qc.register.state_vector
+```
 
-#Project Updates: 
+Output:
+```python
+{'00': 0.7071067811865475, '01': 0.0, '10': 0.7071067811865475, '11': 0.0}
+```
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+Please make sure to update tests as appropriate.
 
-8/15/2019 : Quantum Simulator ready by the end of week, Documentation to be done in future ; Quantum Circuit is taking more timr than expected. But needs to be done for comprehensive understanding of QFT and Shor. Aug 31 is still an achievable deadline for implementation of SHor's algo (Project 8)
-
-
-8/16/2019 : BIG WIN! In terms of programming, complete Quantum simulator is ready and Grover is done as well; Study Scedule is a bit behind but a great leap today. Need to get started on QFT b4 the week of 25th. Looks achievable with small but effective deep work sessions of (1.5-2 hours) Good work! Aug 31 is still on
-
-8/17/2019 : While the simulator maybe ready, it does need some improvements. We wanna produce our best work so it will require some code review days. Today was the first one of those. Aug 31 is ON! Study till the Strain!
-
-8/21/2019 : Sparse Matrices are not important or useful since simulator builds matrices on demand and does not store; Starting Shor's Algorithm simulation.
-
-8/22/2019: The project will be delayed. Unfortunately, for optimization of Shor's Algo, we need extensive understanding of number theory and IQFT, both of which are on hold in our study planner until we get through Quantum Circuits. That chapter is taking long because of some hard but conceptually important exercises that need to be done. I think the best solution then is to keep perfecting simulator as I go along and then simulate/optimize Shor's algorithm with a more intuitive understanding. We do have 6 programming projects ready and presentable. 
+## License
+[MIT](https://choosealicense.com/licenses/mit/)
