@@ -25,6 +25,8 @@ Output:
 ## Architecture
 The main class in QuantumCircuit which is used to generate quantum programs. Classes built into the QuantumCircuit include register (controls state vector operations) and gates (controls various operations to be performed on the quantum circuit). Finally Quantum Circuit class has a measure method, which can simulate measured results of a quantum computation. 
 
+Besides the simulator, there is a folder which includes simulation of Grover and Shor's algorithms. Along with these simulations are loosely related number theory projects, constructed to understand the parts of Shor's algorithm.
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 Please make sure to update tests as appropriate.
