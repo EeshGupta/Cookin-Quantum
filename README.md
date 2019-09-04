@@ -1,23 +1,41 @@
 # Cookin-Quantum
 
-Short-Term Goal: To simulate Shor's factoring algorithm and Grover's Search algorithm. 
+Cookin-Quantum is an open source framework for simulating quantum programs. The goal of this project is to simulate and optimize important Quantum algorithms in fields of encryption and machine learning.
 
-Project Deadline: August 31, 2019
+## Installation
 
-Resources: Candela, Don. “Undergraduate computational physics projects on quantum computing.” (2015).
+This project is to be run on an ipython IDE. I reccomend downloading anaconda from https://www.anaconda.com/distribution/, forking and downloading this repository, and running this project on Spyder.
 
+## Usage
 
+Here we apply the Hadamard Gate to the first qubit in 2 qubit Quantum Circuit and see how such operation affects the probability amplitudes of basis states.
 
+Run the QuantumCircuit file from cookin-quantum/circuit
+```python
+qc = QuantumCircuit(2)
+qc.gates.Hadamard(0)
+qc.register.state_vector
+```
 
-#Project Updates: 
+Output:
+```python
+{'00': 0.7071067811865475, '01': 0.0, '10': 0.7071067811865475, '11': 0.0}
+```
 
-8/15/2019 : Quantum Simulator ready by the end of week, Documentation to be done in future ; Quantum Circuit is taking more timr than expected. But needs to be done for comprehensive understanding of QFT and Shor. Aug 31 is still an achievable deadline for implementation of SHor's algo (Project 8)
+## Architecture
+The main class in QuantumCircuit which is used to generate quantum programs. Classes built into the QuantumCircuit include register (controls state vector operations) and gates (controls various operations to be performed on the quantum circuit). Finally Quantum Circuit class has a measure method, which can simulate measured results of a quantum computation. 
 
+Besides the simulator, there is a folder which includes simulation of Grover and Shor's algorithms. Along with these simulations are loosely related number theory projects, constructed to understand the parts of Shor's algorithm.
 
-8/16/2019 : BIG WIN! In terms of programming, complete Quantum simulator is ready and Grover is done as well; Study Scedule is a bit behind but a great leap today. Need to get started on QFT b4 the week of 25th. Looks achievable with small but effective deep work sessions of (1.5-2 hours) Good work! Aug 31 is still on
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+Please make sure to update tests as appropriate.
 
-8/17/2019 : While the simulator maybe ready, it does need some improvements. We wanna produce our best work so it will require some code review days. Today was the first one of those. Aug 31 is ON! Study till the Strain!
+## Contact
+For more information/suggestions regarding this project and quantum computing in general, please contact me at my email: eesh.gupta@rutgers.edu
 
-8/21/2019 : Sparse Matrices are not important or useful since simulator builds matrices on demand and does not store; Starting Shor's Algorithm simulation.
+## References
+The main architecture of the cookin-quantum framework was built with the help of Don Candela's research paper ["Undergraduate computational physics projects on quantum computing"](https://www.semanticscholar.org/paper/Undergraduate-computational-physics-projects-on-Candela/a1234106949ad338bf668853ee48199b08b2e4ce) .
 
-8/22/2019: The project will be delayed. Unfortunately, for optimization of Shor's Algo, we need extensive understanding of number theory and IQFT, both of which are on hold in our study planner until we get through Quantum Circuits. That chapter is taking long because of some hard but conceptually important exercises that need to be done. I think the best solution then is to keep perfecting simulator as I go along and then simulate/optimize Shor's algorithm with a more intuitive understanding. We do have 6 programming projects ready and presentable. 
+## License
+[MIT](https://choosealicense.com/licenses/mit/)
