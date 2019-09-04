@@ -6,7 +6,7 @@ Created on Fri Aug 16 13:01:31 2019
 """
 #from Register import register
 import numpy as np
-from QuantumCircuit import QuantumCircuit 
+import QuantumCircuit 
 from matplotlib import pyplot
 import math
 

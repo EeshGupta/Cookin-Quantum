@@ -9,6 +9,7 @@ Created on Sat Aug 17 21:40:17 2019
 
 """Archived """
 
+from tests.MultiQubitCircuitTests import test
 #import numpy as np
 #import math
 #import cmath

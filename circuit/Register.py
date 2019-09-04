@@ -6,7 +6,6 @@ Created on Sun Aug 11 10:53:07 2019
 """
 import numpy as np
 from Qubit import Qubit
-from GateBuilder import gates
 import cmath
 import math
 

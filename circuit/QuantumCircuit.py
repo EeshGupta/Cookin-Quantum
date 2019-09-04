@@ -5,7 +5,7 @@ Created on Sat Aug 17 10:24:46 2019
 @author: Eesh Gupta
 """
 from Register import register
-from GateBuilder import gates
+from gate.GateBuilder import gates
 import numpy as np
 import math
 
@@ -93,7 +93,9 @@ class QuantumCircuit(object):
     
 ###Tests###
 #circ =QuantumCircuit(2)
-#circ.gates.Hadamard(1)
+#circ.gates.Hadamard(0)
+#circ.gates.CNOT([0],[1])
+
 #g= circ.gates.stateVector
 #r= circ.register.stateVector
 ##circ.gates.CU1(0,1,math.pi, math.pi, math.pi/2, math.pi)

@@ -7,6 +7,12 @@ Created on Fri Aug 16 12:08:54 2019
 from QuantumCircuit import QuantumCircuit
 import math
 
+class test(object): 
+    def __init__(self): 
+        """
+        test
+        """
+
 def circuit1(): 
     """
     Input: A single hadamard gate on the second qubit and then 2 controls 3

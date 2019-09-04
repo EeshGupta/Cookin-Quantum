@@ -8,11 +8,11 @@ Created on Tue Aug 13 11:50:43 2019
 import numpy as np
 import math
 import cmath
-from GateMaker import gateMaker
-from GroverGates import groverGates
-from ControlGates import control
+from . import GateMaker
+from . import GroverGates
+from . import ControlGates
 
-class gates(gateMaker): 
+class gates(GateMaker.gateMaker): 
     
     def __init__(self, qubits, state_vector): 
         """
@@ -28,7 +28,7 @@ class gates(gateMaker):
         for amp in state_vector.values(): 
             self.stateVector.append(amp)
             
-        self.control = control(self.qubits, self.basis_states, self.stateVector)
+        self.control = ControlGates.control(self.qubits, self.basis_states, self.stateVector)
         
 #####################        Single Qubit Gates          ######################
     def Hadamard(self, target_qubit_index):
@@ -83,13 +83,15 @@ class gates(gateMaker):
         return self.applyGate(gate)
     
 ###############################################################################
-    def CNOT(self, control_indices, target_ind): 
+    def CNOT(self, control_indices, target_indices): 
         """
         Input: a list of indices of control qubits, a list of indices of target
         qubits
         Output: Statevector transformed by CNOT gate
         """
-        return self.applyGate(self.control.CNOT(control_indices, target_ind))
+        return self.applyGate(self.control.CNOT(control_indices, target_indices))
+    
+    #def ControlPhase(self, control_indices,)
     
     def Toffoli(self, control1_index, control2_index, target_index): 
         """
@@ -97,42 +99,43 @@ class gates(gateMaker):
         Output: Implements the toffoli gate on circuit
         """
         return self.CNOT(control_indices = [control1_index, control2_index], 
-                         target_ind = [target_index])
+                         target_indices = [target_index])
     
-    def CU1(self, control_index, target_index, alpha, beta, gamma, delta): 
-        """
-        Input: int control index and int target index. angle values to construct
-        rotation opertors satisfying AXBXC decomposition of a unitary operator.
-        
-        Output: Applies Controlled U gate and transforms stateVector
-        """
-        Z_axis = [0, 0, 1]
-        Y_axis = [0, 1, 0]
-        
-        A= (math.e**(complex(0,1)*alpha))*self.R(Z_axis, beta)*self.R(Y_axis, gamma/2)
-        B= self.R(Y_axis, -gamma/2)*self.R(Z_axis, -(delta +beta)/2)
-        C= self.R(Z_axis, (delta - beta)/2)
-        
-        #Performing the operations AXBXC
-        #A
-        gateA = self.SingletoMultiQubitGateConverter(gate = A,
-                                                     target_qubit_index = target_index,
-                                                    qubits = self.qubits)
-        self.applyGate(gateA)
-        #X
-        self.CNOT(control_indices = [control_index], target_ind = [target_index])
-        #B
-        gateB = self.SingletoMultiQubitGateConverter(gate = B,
-                                                     target_qubit_index = target_index,
-                                                    qubits = self.qubits)
-        self.applyGate(gateB)
-        #X
-        self.CNOT([control_index], [target_index])
-        #C
-        gateC = self.SingletoMultiQubitGateConverter(gate = C,
-                                                     target_qubit_index = target_index,
-                                                    qubits = self.qubits)
-        self.applyGate(gateC)
+##Low Priority so not important at the moment
+#   def CU1(self, control_index, target_index, alpha, beta, gamma, delta): 
+#        """
+#        Input: int control index and int target index. angle values to construct
+#        rotation opertors satisfying AXBXC decomposition of a unitary operator.
+#        
+#        Output: Applies Controlled U gate and transforms stateVector
+#        """
+#        Z_axis = [0, 0, 1]
+#        Y_axis = [0, 1, 0]
+#        
+#        A= (math.e**(complex(0,1)*alpha))*self.R(Z_axis, beta)*self.R(Y_axis, gamma/2)
+#        B= self.R(Y_axis, -gamma/2)*self.R(Z_axis, -(delta +beta)/2)
+#        C= self.R(Z_axis, (delta - beta)/2)
+#        
+#        #Performing the operations AXBXC
+#        #A
+#        gateA = self.SingletoMultiQubitGateConverter(gate = A,
+#                                                     target_qubit_index = target_index,
+#                                                    qubits = self.qubits)
+#        self.applyGate(gateA)
+#        #X
+#        self.CNOT(control_indices = [control_index], target_indices = [target_index])
+#        #B
+#        gateB = self.SingletoMultiQubitGateConverter(gate = B,
+#                                                     target_qubit_index = target_index,
+#                                                    qubits = self.qubits)
+#        self.applyGate(gateB)
+#        #X
+#        self.CNOT([control_index], [target_index])
+#        #C
+#        gateC = self.SingletoMultiQubitGateConverter(gate = C,
+#                                                     target_qubit_index = target_index,
+#                                                    qubits = self.qubits)
+#        self.applyGate(gateC)
         
 #    def CUN(self, n, alpha, beta, gamma, delta): 
 #        """
@@ -176,17 +179,23 @@ class gates(gateMaker):
         """
         Applies the oracle onto stateVector
         """
-        g = groverGates()
+        g = GroverGates.groverGates()
         return self.applyGate(g.oracle(n = self.qubits, needle_state = needle_state))
     
     def J(self): 
         """
         Applies the oracle onto stateVector
         """
-        g = groverGates()
+        g = GroverGates.groverGates()
         return self.applyGate(g.jOperator(n = self.qubits))
     
         
+#######################         Shor's Algo          ##########################'
+    def controlShor7(self, control_index, C, a): 
+        """
+        Applies the control gate for phase estimation
+        """
+        return self.applyGate(self.control.controlShor7(control_index, a, C))
 ###############################################################################
         
     def applyGate(self, gate): 
